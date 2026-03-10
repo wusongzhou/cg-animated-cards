@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&display=swap');
 
 :root {
     /* GSAP.com exact colors */
@@ -21,7 +21,7 @@
 
 html,
 body {
-    font-family: "Inter", "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--dark);
     color: var(--text);
     overflow-x: hidden;
@@ -232,11 +232,11 @@ nav {
 }
 
 .hero-title {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "DM Sans", sans-serif;
     font-size: clamp(5rem, 16vw, 16rem);
     font-weight: 900;
     text-transform: none;
-    letter-spacing: -0.06em;
+    letter-spacing: 0.02em;
     line-height: 0.85;
     text-align: left;
     position: relative;
@@ -244,7 +244,7 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.02em;
+    gap: 0.05em;
     perspective: 1000px;
     margin-top: -3rem;
     margin-left: 5vw;
@@ -277,6 +277,7 @@ nav {
 /* 3D透视效果的clip容器 - a, i, y */
 .hero-title .clip-3d {
     perspective: 750px;
+    overflow: visible;
 }
 
 /* 字符交换结构 - n, t */
@@ -318,6 +319,8 @@ nav {
 /* 3D透视字符 */
 .hero-title .clip-3d .char {
     transform-style: preserve-3d;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
 }
 
 /* Color assignments - GSAP.com style: unified ivory white */

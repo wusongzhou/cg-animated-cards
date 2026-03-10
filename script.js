@@ -149,6 +149,40 @@ document.addEventListener("DOMContentLoaded", () => {
         delay: 2
     });
 
+    // Continuous flip animation for 'i' in "Anything" - like gsap.com
+    // Wait for entrance animation then start flipping
+    setTimeout(() => {
+        const wordAny = document.querySelectorAll(".word-animate")[1];
+        const clipsAny = wordAny.querySelectorAll(".clip");
+        const letterI = clipsAny[5]; // 0:A, 1:n, 2:y, 3:t, 4:h, 5:i
+        const charI = letterI.querySelector(".char");
+
+        // Set transform origin to center
+        gsap.set(charI, { transformOrigin: "center center" });
+
+        // Flip animation - 540 degrees, hold, then flip back
+        const tl = gsap.timeline({ repeat: -1 });
+
+        tl.to(charI, {
+            rotationX: 540,
+            duration: 2,
+            ease: "power1.inOut"
+        })
+        .to(charI, {
+            rotationX: 540,
+            duration: 1.5 // hold
+        })
+        .to(charI, {
+            rotationX: 0,
+            duration: 2,
+            ease: "power1.inOut"
+        })
+        .to(charI, {
+            rotationX: 0,
+            duration: 1.5 // hold
+        });
+    }, 2500);
+
     // Hover effect
     const allClips = heroTitle.querySelectorAll(".clip");
     allClips.forEach((clip) => {
@@ -167,91 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
         y: 20,
         delay: 1.5,
         ease: "power2.out"
-    });
-
-    // Animate decorations - cleaner reveal
-    gsap.from(".decor-circle", {
-        duration: 1.5,
-        scale: 0,
-        opacity: 0,
-        ease: "power3.out",
-        delay: 1.8
-    });
-
-    gsap.from(".decor-star", {
-        duration: 1.5,
-        rotation: -180,
-        scale: 0,
-        opacity: 0,
-        ease: "power3.out",
-        delay: 2
-    });
-
-    gsap.from(".decor-diamond", {
-        duration: 1.5,
-        scale: 0,
-        opacity: 0,
-        ease: "power3.out",
-        delay: 2.2
-    });
-
-    gsap.from(".decor-spinner", {
-        duration: 1.5,
-        rotation: 180,
-        scale: 0,
-        opacity: 0,
-        ease: "power3.out",
-        delay: 2.4
-    });
-
-    // Animate new decorations
-    gsap.from(".decor-blob", {
-        duration: 2,
-        scale: 0,
-        opacity: 0,
-        stagger: 0.2,
-        ease: "power2.out",
-        delay: 0.3
-    });
-
-    gsap.from(".decor-grid", {
-        duration: 1.5,
-        opacity: 0,
-        ease: "power2.out",
-        delay: 0.5
-    });
-
-    gsap.from(".decor-line", {
-        duration: 1.5,
-        width: 0,
-        opacity: 0,
-        stagger: 0.3,
-        ease: "power3.out",
-        delay: 1.2
-    });
-
-    gsap.from(".dots-overlay", {
-        duration: 1,
-        opacity: 0,
-        ease: "power2.out",
-        delay: 0.8
-    });
-
-    // Floating animation for decorations
-    gsap.to(".decor-circle", {
-        y: 30,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-    });
-
-    gsap.to(".decor-diamond", {
-        y: -20,
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
     });
 
     // =====================
@@ -465,52 +414,6 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 0.3,
             ease: "power2.out"
         });
-    });
-
-    // =====================
-    // Parallax Decorations on Scroll
-    // =====================
-
-    gsap.to(".decor-circle", {
-        scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1
-        },
-        y: -100
-    });
-
-    gsap.to(".decor-star", {
-        scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1
-        },
-        y: -150,
-        rotation: 45
-    });
-
-    // Parallax for blobs
-    gsap.to(".decor-blob-1", {
-        scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1
-        },
-        y: -200
-    });
-
-    gsap.to(".decor-blob-2", {
-        scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1
-        },
-        y: -150
     });
 
     // Footer animation
