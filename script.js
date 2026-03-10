@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
 
+    // Initialize Lenis for smooth scrolling
     const lenis = new Lenis();
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => {
@@ -8,171 +9,221 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     gsap.ticker.lagSmoothing(0);
 
-    const smoothStep = (p) => p * p * (3 - 2 * p);
+    // =====================
+    // Hero Animations
+    // =====================
 
-    ScrollTrigger.create({
-        trigger: ".hero",
-        start: "top top",
-        end: "75% top",
-        scrub: 1,
-        onUpdate: (self) => {
-            const progress = self.progress;
+    // Animate hero title words with stagger
+    const heroTitle = document.querySelector(".hero-title");
+    const heroWords = heroTitle.querySelectorAll(".word span");
 
-            const heroCardContainerOpacity = gsap.utils.interpolate(
-                1,
-                0.5,
-                smoothStep(progress)
-            );
-            gsap.set(".hero-cards", { opacity: heroCardContainerOpacity });
-
-            ["#hero-card-1", "#hero-card-2", "#hero-card-3"].forEach(
-                (cardId, index) => {
-                    const delay = index * 0.9;
-                    const cardProgress = gsap.utils.clamp(
-                        0,
-                        1,
-                        (progress - delay * 0.1) / (1 - delay * 0.1)
-                    );
-
-                    const y = gsap.utils.interpolate("0%", "250%", smoothStep(cardProgress));
-                    const scale = gsap.utils.interpolate(1, 0.75, smoothStep(cardProgress));
-
-                    let x = "0%";
-                    let rotation = 0;
-                    if (index === 0) {
-                        x = gsap.utils.interpolate("0%", "90%", smoothStep(cardProgress));
-                        rotation = gsap.utils.interpolate(0, -15, smoothStep(cardProgress));
-                    } else if (index === 2) {
-                        x = gsap.utils.interpolate("0%", "-90%", smoothStep(cardProgress));
-                        rotation = gsap.utils.interpolate(0, 15, smoothStep(cardProgress));
-                    }
-
-                    gsap.set(cardId, { y, scale, x, rotation });
-                }
-            );
-        }
-    });
-    ScrollTrigger.create({
-        trigger: ".services",
-        start: "top top",
-        end: `+=${window.innerHeight * 4}px`,
-        pin: ".services",
-        pinSpacing: true,
+    gsap.from(heroWords, {
+        duration: 1.2,
+        y: 100,
+        opacity: 0,
+        rotateX: -90,
+        stagger: 0.15,
+        ease: "power4.out",
+        transformPerspective: 750
     });
 
-    ScrollTrigger.create({
-        trigger: ".services",
-        start: "top top",
-        end: `+=${window.innerHeight * 4}px`,
-        onLeave: () => {
-            const servicesSection = document.querySelector(".services");
-            const servicesRect = servicesSection.getBoundingClientRect();
-            const servicesTop = servicesRect.top + window.pageYOffset;
+    // Animate subtitle
+    gsap.from(".hero-subtitle", {
+        duration: 1,
+        opacity: 0,
+        y: 30,
+        delay: 0.8,
+        ease: "power2.out"
+    });
 
-            gsap.set(".cards", {
-                position: "absolute",
-                top: servicesTop,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-            });
+    // Animate decorations
+    gsap.from(".decor-circle", {
+        duration: 2,
+        scale: 0,
+        opacity: 0,
+        ease: "elastic.out(1, 0.5)",
+        delay: 0.5
+    });
+
+    gsap.from(".decor-star", {
+        duration: 1.5,
+        rotation: -180,
+        scale: 0,
+        opacity: 0,
+        ease: "back.out(1.7)",
+        delay: 0.7
+    });
+
+    gsap.from(".decor-diamond", {
+        duration: 1.5,
+        x: -100,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 0.9
+    });
+
+    gsap.from(".decor-spinner", {
+        duration: 2,
+        rotation: 180,
+        scale: 0,
+        opacity: 0,
+        ease: "power2.out",
+        delay: 1.1
+    });
+
+    // Floating animation for decorations
+    gsap.to(".decor-circle", {
+        y: 30,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
+
+    gsap.to(".decor-diamond", {
+        y: -20,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
+
+    // =====================
+    // Features Animations
+    // =====================
+
+    const featureCards = document.querySelectorAll(".feature-card");
+
+    // Animate features title
+    gsap.from(".features-title", {
+        scrollTrigger: {
+            trigger: ".features",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
         },
-        onEnterBack: () => {
-            gsap.set(".cards", {
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-            });
+        duration: 1,
+        y: 60,
+        opacity: 0,
+        ease: "power3.out"
+    });
+
+    // Animate feature cards with stagger
+    gsap.from(featureCards, {
+        scrollTrigger: {
+            trigger: ".features-grid",
+            start: "top 75%",
+            toggleActions: "play none none reverse"
+        },
+        duration: 0.8,
+        y: 80,
+        opacity: 0,
+        stagger: 0.15,
+        ease: "power3.out"
+    });
+
+    // =====================
+    // Showcase - Horizontal Scroll
+    // =====================
+
+    const showcase = document.querySelector(".showcase");
+    const showcaseWrapper = document.querySelector(".showcase-wrapper");
+    const showcaseItems = document.querySelectorAll(".showcase-item");
+
+    // Calculate total scroll distance
+    const getScrollAmount = () => {
+        return -(showcaseWrapper.scrollWidth - window.innerWidth);
+    };
+
+    const tween = gsap.to(showcaseWrapper, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+            trigger: ".showcase",
+            start: "top top",
+            end: () => `+=${showcaseWrapper.scrollWidth - window.innerWidth}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+            anticipatePin: 1
         }
     });
 
-    ScrollTrigger.create({
-        trigger: ".services",
-        start: "top bottom",
-        end: `+=${window.innerHeight * 4}px`,
-        scrub: 1,
-        onUpdate: (self) => {
-            const progress = self.progress;
+    // Animate showcase items as they enter view
+    showcaseItems.forEach((item, i) => {
+        gsap.from(item, {
+            scrollTrigger: {
+                trigger: item,
+                containerAnimation: tween,
+                start: "left 90%",
+                toggleActions: "play none none reverse"
+            },
+            duration: 0.6,
+            scale: 0.8,
+            opacity: 0,
+            ease: "back.out(1.7)"
+        });
+    });
 
-            const headerProgress = gsap.utils.clamp(0, 1, progress * 0.9);
-            const headerY = gsap.utils.interpolate("400%", "0%", smoothStep(headerProgress));
-            gsap.set(".services-header", { y: headerY });
-            ["#card-1", "#card-2", "#card-3"].forEach((cardId, index) => {
-                const delay = index * 0.5;
-                const cardProgress = gsap.utils.clamp(
-                    0,
-                    1,
-                    (progress - delay * 0.1) / (0.9 - delay * 0.1)
-                );
-                const innerCard = document.querySelector(`${cardId} .flip-card-inner`);
+    // =====================
+    // CTA Animations
+    // =====================
 
-                let y;
-                if (cardProgress < 0.4) {
-                    const normalizedProgress = cardProgress / 0.4;
-                    y = gsap.utils.interpolate("-100%", "50%",
-                        smoothStep(normalizedProgress));
-                } else if (cardProgress < 0.6) {
-                    const normalizedProgress = (cardProgress - 0.4) / 0.2;
-                    y = gsap.utils.interpolate("50%", "0%", smoothStep(normalizedProgress));
-                } else {
-                    y = "0%";
-                }
+    gsap.from(".cta h2", {
+        scrollTrigger: {
+            trigger: ".cta",
+            start: "top 70%",
+            toggleActions: "play none none reverse"
+        },
+        duration: 1,
+        y: 60,
+        opacity: 0,
+        ease: "power3.out"
+    });
 
-                let scale;
-                if (cardProgress < 0.4) {
-                    const normalizedProgress = cardProgress / 0.4;
-                    scale = gsap.utils.interpolate(0.25, 0.75, smoothStep(normalizedProgress));
-                } else if (cardProgress < 0.6) {
-                    const normalizedProgress = (cardProgress - 0.4) / 0.2;
-                    scale = gsap.utils.interpolate(0.75, 1, smoothStep(normalizedProgress));
-                } else {
-                    scale = 1;
-                }
+    gsap.from(".cta-button", {
+        scrollTrigger: {
+            trigger: ".cta",
+            start: "top 60%",
+            toggleActions: "play none none reverse"
+        },
+        duration: 0.8,
+        scale: 0,
+        opacity: 0,
+        ease: "back.out(1.7)",
+        delay: 0.3
+    });
 
-                let opacity;
-                if (cardProgress < 0.2) {
-                    const normalizedProgress = cardProgress / 0.2;
-                    opacity = smoothStep(normalizedProgress);
-                } else {
-                    opacity = 1;
-                }
+    // Continuous float animation for CTA button
+    gsap.to(".cta-button", {
+        boxShadow: "0 0 30px rgba(10, 228, 72, 0.3)",
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
 
-                let x, rotate, rotateY;
-                if (cardProgress < 0.6) {
-                    x = index === 0 ? "100%" : index === 1 ? "0%" : "-100%";
-                    rotate = index === 0 ? -5 : index === 1 ? 0 : 5;
-                    rotateY = 0;
-                } else if (cardProgress < 1) {
-                    const normalizedProgress = (cardProgress - 0.6) / 0.4;
-                    x = gsap.utils.interpolate(
-                        index === 0 ? "100%" : index === 1 ? "0%" : "-100%",
-                        "0%",
-                        smoothStep(normalizedProgress)
-                    );
-                    rotate = gsap.utils.interpolate(
-                        index === 0 ? -5 : index === 1 ? 0 : 5,
-                        0,
-                        smoothStep(normalizedProgress)
-                    );
-                    rotateY = smoothStep(normalizedProgress) * 180;
-                } else {
-                    x = "0%";
-                    rotate = 0;
-                    rotateY = 180;
-                }
+    // =====================
+    // Parallax Decorations on Scroll
+    // =====================
 
-                gsap.set(cardId, {
-                    y,
-                    x,
-                    scale,
-                    rotate,
-                    opacity,
-                });
-                gsap.set(innerCard, { rotationY: rotateY });
-            });
-        }
+    gsap.to(".decor-circle", {
+        scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1
+        },
+        y: -100
+    });
 
+    gsap.to(".decor-star", {
+        scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1
+        },
+        y: -150,
+        rotation: 45
     });
 });

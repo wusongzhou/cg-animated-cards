@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.archidomo.fr)",
+      "WebSearch",
+      "WebFetch(domain:www.minimaxi.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:gsap.com)",
+      "Bash(python -m http.server 8080)"
+    ]
+  }
+}
