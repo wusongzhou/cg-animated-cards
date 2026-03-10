@@ -6,7 +6,17 @@
       "WebFetch(domain:www.minimaxi.com)",
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:gsap.com)",
-      "Bash(python -m http.server 8080)"
+      "Bash(python -m http.server 8080)",
+      "Bash(sleep 1 && curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080)",
+      "Bash(python3 -m http.server 8080 2>&1 || python -m http.server 8080 2>&1)",
+      "Bash(npx -y serve -l 3000)",
+      "Bash(npx -y serve -l 5000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5000)",
+      "Bash(sleep 1 && curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/)",
+      "Bash(curl -s http://localhost:8080/ | head -60)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/)",
+      "Bash(find /c/Users/wuson -name \"*.png\" -type f 2>/dev/null | head -10)",
+      "mcp__MiniMax__understand_image"
     ]
   }
 }

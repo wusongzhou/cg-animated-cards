@@ -1,14 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
 
 :root {
+    /* GSAP.com exact colors */
     --dark: #0e100f;
     --green: #0ae448;
     --pink: #fec5fb;
     --orange: #ff8709;
     --blue: #00bae2;
     --purple: #9d95ff;
-    --text: #f5f5f5;
-    --text-muted: rgba(245, 245, 245, 0.6);
+    --yellow: #ffdd57;
+    --text: rgb(255, 252, 225);
+    --text-muted: rgba(255, 252, 225, 0.7);
 }
 
 * {
@@ -19,7 +21,7 @@
 
 html,
 body {
-    font-family: "Outfit", sans-serif;
+    font-family: "Inter", "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--dark);
     color: var(--text);
     overflow-x: hidden;
@@ -28,28 +30,38 @@ body {
 
 nav {
     position: fixed;
-    width: 100vw;
-    padding: 1.5rem 2rem;
+    width: 100%;
+    padding: 1.5rem 2.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    mix-blend-mode: difference;
 }
 
-.logo span,
-.menu-btn span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.6rem 1rem;
-    border-radius: 0.3rem;
+.logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.menu-btn a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+}
+
+.menu-btn a:hover {
     background: var(--text);
     color: var(--dark);
 }
 
-/* Hero Section */
+/* Hero Section - Pure dark background like gsap.com */
 .hero {
     position: relative;
     width: 100%;
@@ -59,7 +71,8 @@ nav {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    perspective: 750px;
+    perspective: 1000px;
+    background: var(--dark);
 }
 
 .hero-decorations {
@@ -70,61 +83,120 @@ nav {
     height: 100%;
     pointer-events: none;
     z-index: 0;
+    overflow: hidden;
 }
 
-.decor-circle,
-.decor-star,
-.decor-diamond,
-.decor-spinner {
+/* Windmill - on 'n' letter */
+.decor-windmill {
     position: absolute;
-    opacity: 0.8;
-}
-
-.decor-circle {
-    width: 300px;
-    height: 300px;
-    border: 2px solid var(--green);
-    border-radius: 50%;
-    top: 10%;
-    left: 5%;
-    animation: pulse 4s ease-in-out infinite;
-}
-
-.decor-star {
-    width: 120px;
-    height: 120px;
-    top: 20%;
-    right: 10%;
-    fill: var(--pink);
-    animation: rotate 20s linear infinite;
-}
-
-.decor-diamond {
     width: 80px;
     height: 80px;
-    bottom: 15%;
+    top: 30%;
     left: 15%;
-    border: 2px solid var(--blue);
-    transform: rotate(45deg);
-    animation: float 6s ease-in-out infinite;
+    animation: float-windmill 3s ease-in-out infinite;
 }
 
-.decor-spinner {
-    width: 200px;
-    height: 200px;
-    bottom: 10%;
-    right: 8%;
-    animation: spin 15s linear infinite;
+.decor-windmill svg {
+    width: 100%;
+    height: 100%;
+    animation: spin 10s linear infinite;
 }
 
-.decor-spinner svg {
+.decor-windmill svg {
     width: 100%;
     height: 100%;
 }
 
+/* Lightning bolt - upper right area */
+.decor-bolt {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 22%;
+    right: 18%;
+    animation: float 3s ease-in-out infinite;
+}
+
+.decor-bolt svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Pill shape - right side */
+.decor-pill {
+    position: absolute;
+    width: 60px;
+    height: 20px;
+    top: 35%;
+    right: 8%;
+    transform: rotate(-20deg);
+    animation: float 4s ease-in-out infinite;
+}
+
+.decor-pill svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Worm/Squiggle - bottom left */
+.decor-worm {
+    position: absolute;
+    width: 100px;
+    height: 30px;
+    bottom: 30%;
+    left: 15%;
+    animation: worm-move 5s ease-in-out infinite;
+}
+
+.decor-worm svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Star - upper right */
+.decor-star {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 12%;
+    right: 22%;
+    animation: rotate 15s linear infinite;
+}
+
+.decor-star svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Circle outline - bottom right */
+.decor-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    bottom: 25%;
+    right: 12%;
+    opacity: 0.5;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+/* Diamond shape - left side middle */
+.decor-diamond {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: var(--pink);
+    transform: rotate(45deg);
+    top: 55%;
+    left: 8%;
+    opacity: 0.6;
+    animation: diamond-float 4s ease-in-out infinite;
+}
+
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.1); opacity: 1; }
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 @keyframes rotate {
@@ -132,59 +204,195 @@ nav {
     to { transform: rotate(360deg); }
 }
 
-@keyframes float {
-    0%, 100% { transform: rotate(45deg) translateY(0); }
-    50% { transform: rotate(45deg) translateY(-20px); }
-}
-
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes float-windmill {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+@keyframes diamond-float {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(-10px); }
+}
+
+@keyframes worm-move {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(5px) translateY(-3px); }
+    50% { transform: translateX(0) translateY(3px); }
+    75% { transform: translateX(-5px) translateY(-3px); }
+}
+
 .hero-title {
-    font-size: clamp(3rem, 12vw, 14rem);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 0.9;
-    text-align: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(5rem, 16vw, 16rem);
+    font-weight: 900;
+    text-transform: none;
+    letter-spacing: -0.06em;
+    line-height: 0.85;
+    text-align: left;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.02em;
+    perspective: 1000px;
+    margin-top: -3rem;
+    margin-left: 5vw;
+    width: calc(100% - 10vw);
 }
 
-.hero-title .word {
-    display: inline-block;
+.hero-title .word-animate:last-child {
+    align-self: flex-end;
+    margin-right: 5vw;
+}
+
+.hero-title .word-animate {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
     position: relative;
+    overflow: visible;
+    line-height: 1;
+    height: 1em;
 }
 
-.hero-title .word span {
+/* Clip container for each letter */
+.hero-title .clip {
     display: inline-block;
-    font-family: inherit;
-    background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    overflow: hidden;
+    position: relative;
+    vertical-align: bottom;
+}
+
+/* 3D透视效果的clip容器 - a, i, y */
+.hero-title .clip-3d {
+    perspective: 750px;
+}
+
+/* 字符交换结构 - n, t */
+.hero-title .clip-swap {
+    overflow: visible;
+}
+
+.hero-title .clip-swap .char {
+    position: relative;
+    display: inline-block;
+}
+
+.hero-title .char-front,
+.hero-title .char-back {
+    display: inline-block;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.hero-title .char-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotateY(180deg);
+}
+
+/* 初始隐藏 swap 字母，等动画显示 */
+.hero-title .clip-swap .char-front,
+.hero-title .clip-swap .char-back {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.hero-title .char {
+    display: inline-block;
+    transform-origin: center bottom;
+}
+
+/* 3D透视字符 */
+.hero-title .clip-3d .char {
     transform-style: preserve-3d;
 }
 
-.hero-title .word:nth-child(1) span {
-    color: var(--green);
-    -webkit-text-fill-color: var(--green);
-}
-
-.hero-title .word:nth-child(2) span {
-    color: var(--pink);
-    -webkit-text-fill-color: var(--pink);
+/* Color assignments - GSAP.com style: unified ivory white */
+.hero-title .word-animate .char {
+    color: var(--text);
 }
 
 .hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: 400;
-    color: var(--text-muted);
+    color: rgba(255, 252, 225, 0.5);
     margin-top: 2rem;
-    letter-spacing: 0.1em;
+    margin-left: 5vw;
+    letter-spacing: 0.05em;
+    font-family: 'Courier New', monospace;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 252, 225, 0.15);
+    background: rgba(255, 252, 225, 0.03);
+    display: inline-block;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.scroll-indicator span {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.scroll-indicator .mouse {
+    width: 22px;
+    height: 36px;
+    border: 1.5px solid rgba(245, 245, 245, 0.4);
+    border-radius: 11px;
+    position: relative;
+}
+
+.scroll-indicator .mouse::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 2px;
+    animation: scroll-wheel 2s ease-in-out infinite;
+}
+
+@keyframes scroll-wheel {
+    0%, 100% { opacity: 1; top: 5px; }
+    50% { opacity: 0.3; top: 16px; }
+}
+
+.scroll-indicator:hover .mouse {
+    border-color: var(--green);
+}
+
+.scroll-indicator:hover span {
+    color: var(--green);
 }
 
 /* Features Section */
@@ -265,6 +473,76 @@ nav {
     font-size: 0.95rem;
     color: var(--text-muted);
     line-height: 1.6;
+}
+
+.feature-card .card-extra {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card.active .card-extra {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 1rem;
+}
+
+.feature-card .card-extra code {
+    display: block;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    margin-top: 0.5rem;
+}
+
+.feature-card .demo-box {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border-radius: 0.5rem;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card .demo-box .demo-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+.feature-card:nth-child(1) .demo-dot { background: var(--green); }
+.feature-card:nth-child(2) .demo-dot { background: var(--pink); }
+.feature-card:nth-child(3) .demo-dot { background: var(--blue); }
+.feature-card:nth-child(4) .demo-dot { background: var(--purple); }
+
+.feature-card .click-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feature-card .click-hint svg {
+    width: 14px;
+    height: 14px;
+    animation: bounce-hint 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce-hint {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
 
 /* Showcase Section - Horizontal Scroll */
@@ -356,7 +634,7 @@ nav {
     align-items: center;
     text-align: center;
     padding: 4rem 2rem;
-    background: radial-gradient(ellipse at center, #1a 01a1a%, var(--dark) 70%);
+    background: var(--dark);
 }
 
 .cta h2 {
@@ -372,6 +650,14 @@ nav {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-size: 300% 100%;
+    animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .cta-button {
