@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".claude/settings.local.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1773222325922,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1773222325922,
+            "name": "Commit-0",
+            "content": "{\n  \"permissions\": {\n    \"allow\": [\n      \"WebFetch(domain:www.archidomo.fr)\",\n      \"WebSearch\",\n      \"WebFetch(domain:www.minimaxi.com)\",\n      \"WebFetch(domain:www.anthropic.com)\",\n      \"WebFetch(domain:gsap.com)\",\n      \"Bash(python -m http.server 8080)\",\n      \"Bash(sleep 1 && curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:8080)\",\n      \"Bash(python3 -m http.server 8080 2>&1 || python -m http.server 8080 2>&1)\",\n      \"Bash(npx -y serve -l 3000)\",\n      \"Bash(npx -y serve -l 5000)\",\n      \"Bash(curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:5000)\",\n      \"Bash(sleep 1 && curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:8080/)\",\n      \"Bash(curl -s http://localhost:8080/ | head -60)\",\n      \"Bash(curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:8080/)\",\n      \"Bash(find /c/Users/wuson -name \\\"*.png\\\" -type f 2>/dev/null | head -10)\",\n      \"mcp__MiniMax__understand_image\"\n    ]\n  }\n}\n"
+        }
+    ]
+}

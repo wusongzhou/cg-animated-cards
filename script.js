@@ -18,9 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "power2.out"
     });
 
-    // Scroll indicator click - smooth scroll to features
+    // Scroll indicator click - smooth scroll to why-gsap
     document.querySelector(".scroll-indicator").addEventListener("click", () => {
-        const target = document.querySelector(".features");
+        const target = document.querySelector(".why-gsap");
         const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
 
         window.scrollTo({
@@ -204,96 +204,336 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =====================
-    // Features Animations
+    // Why GSAP Section - Enhanced Horizontal Scroll (GSAP.com style)
     // =====================
 
-    const featureCards = document.querySelectorAll(".feature-card");
+    const whyGsapSection = document.querySelector(".why-gsap");
+    const whyTrack = document.querySelector(".why-gsap-track");
+    const whyCards = document.querySelectorAll(".why-card");
+    const whyTitle = document.querySelector(".why-gsap-title");
 
-    // Animate features title with word stagger
-    gsap.from(".features-title", {
+    // Create horizontal scroll animation - more distance for 3 cards
+    const whyScrollAmount = () => {
+        // Each card needs more scroll distance to fully appear
+        return -(whyTrack.scrollWidth - window.innerWidth * 0.2);
+    };
+
+    // Track current active card
+    let currentWhyCard = 0;
+    let whyAnimated = false;
+    function initWhyCards() {
+        whyCards.forEach((card, index) => {
+            if (index === 0) {
+                // First card - visible
+                gsap.set(card, { opacity: 1, scale: 1, rotationY: 0 });
+            } else if (index === 1) {
+                // Second card - slightly visible on right
+                gsap.set(card, { opacity: 0.5, scale: 0.98, rotationY: -2 });
+            } else {
+                // Other cards - hidden
+                gsap.set(card, { opacity: 0, scale: 0.9, rotationY: -5 });
+            }
+        });
+    }
+
+    // Initialize on load
+    initWhyCards();
+    
+    // Track which cards have been animated
+    let animatedCards = new Set();
+
+    // Function to trigger animation based on scroll progress
+    function checkAndAnimateCards(self) {
+        const totalCards = whyCards.length;
+        const cardThreshold = 1 / totalCards;
+        
+        whyCards.forEach((card, index) => {
+            // Each card has a progress range: 0-0.33, 0.33-0.66, 0.66-1.0
+            const cardStart = index * cardThreshold * 0.9;
+            const cardEnd = cardStart + cardThreshold;
+            
+            const shouldAnimate = self.progress >= cardStart && self.progress < cardEnd;
+            
+            if (shouldAnimate && !animatedCards.has(index)) {
+                animatedCards.add(index);
+                
+                gsap.to(card, {
+                    opacity: 1,
+                    scale: 1,
+                    rotationY: 0,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+                
+                console.log(`✓ Animating card ${index}, progress=${self.progress.toFixed(2)}, range=[${cardStart.toFixed(2)}-${cardEnd.toFixed(2)}]`);
+                animateCardContent(card, index, true);
+            }
+        });
+    }
+
+    // Initialize first card immediately
+    setTimeout(() => {
+        animatedCards.add(0);
+        animateCardContent(whyCards[0], 0, true);
+    }, 100);
+
+    // Horizontal scroll tween
+    const whyTween = gsap.to(whyTrack, {
+        x: whyScrollAmount,
+        ease: "none",
         scrollTrigger: {
-            trigger: ".features",
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-        },
-        duration: 1,
+            trigger: whyGsapSection,
+            start: "top top",
+            // More scroll distance so each card takes time to appear
+            end: () => `+=${whyTrack.scrollWidth * 2.2}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+            toggleActions: "play none none none",
+            onEnter: () => {
+                // Trigger background animation on first enter
+            },
+            onUpdate: (self) => {
+                // Check and animate cards
+                checkAndAnimateCards(self);
+                
+                // Simple: just show cards based on progress
+                const totalCards = whyCards.length;
+                
+                whyCards.forEach((card, index) => {
+                    const cardStart = index / totalCards;
+                    const cardEnd = (index + 1) / totalCards;
+                    
+                    // Current card is fully visible
+                    if (self.progress >= cardStart && self.progress < cardEnd) {
+                        gsap.to(card, {
+                            opacity: 1,
+                            scale: 1,
+                            rotationY: 0,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        });
+                    }
+                    // Previous cards fade out
+                    else if (self.progress < cardStart) {
+                        gsap.to(card, {
+                            opacity: 0,
+                            duration: 0.2
+                        });
+                    }
+                    // Next cards
+                    else {
+                        gsap.to(card, {
+                            opacity: 0,
+                            duration: 0.2
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    // Function to animate card content - animate each time card becomes active
+    function animateCardContent(card, index, isEntering = false) {
+        // Only animate when entering (not during scroll)
+        if (!isEntering) {
+            return;
+        }
+        
+        // Kill any existing animations on this card's elements
+        gsap.killTweensOf(card.querySelectorAll(".title-char"));
+        gsap.killTweensOf(card.querySelector(".why-subtitle"));
+        gsap.killTweensOf(card.querySelector(".why-desc"));
+        gsap.killTweensOf(card.querySelector(".why-tags"));
+        gsap.killTweensOf(card.querySelector(".why-card-visual"));
+        
+        const subtitle = card.querySelector(".why-subtitle");
+        const desc = card.querySelector(".why-desc");
+        const tags = card.querySelector(".why-tags");
+        const visual = card.querySelector(".why-card-visual");
+        const chars = card.querySelectorAll(".title-char");
+        
+        // Subtitle animation - smooth fade in
+        if (subtitle) {
+            gsap.fromTo(subtitle, 
+                { opacity: 0, x: -30 },
+                { opacity: 1, x: 0, duration: 0.6, ease: "power2.out" }
+            );
+        }
+        
+        // Animate each character with staggered delay
+        if (chars.length > 0) {
+            chars.forEach((char, i) => {
+                gsap.fromTo(char, 
+                    { opacity: 0, y: 80, rotationX: -60, scale: 0.8 },
+                    { opacity: 1, y: 0, rotationX: 0, scale: 1, duration: 0.8, delay: i * 0.03 + 0.1, ease: "elastic.out(1, 0.5)" }
+                );
+            });
+        }
+        
+        // Description animation
+        if (desc) {
+            gsap.fromTo(desc,
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 0.6, delay: chars.length * 0.03 + 0.3, ease: "power2.out" }
+            );
+        }
+        
+        // Tags animation
+        if (tags) {
+            const tagSpans = tags.querySelectorAll("span");
+            gsap.fromTo(tagSpans, 
+                { opacity: 0, y: 20, scale: 0.8 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, delay: chars.length * 0.03 + 0.4, ease: "back.out(1.7)" }
+            );
+        }
+        
+        // Visual animation
+        if (visual) {
+            gsap.fromTo(visual, 
+                { scale: 0.5, opacity: 0, rotation: -30 },
+                { scale: 1, opacity: 1, rotation: 0, duration: 1, delay: 0.2, ease: "elastic.out(1, 0.6)" }
+            );
+        }
+    }
+
+    // Function to reset/hide card content for smooth transition
+    function resetCardContent(card) {
+        const subtitle = card.querySelector(".why-subtitle");
+        const desc = card.querySelector(".why-desc");
+        const tags = card.querySelector(".why-tags");
+        const visual = card.querySelector(".why-card-visual");
+        const chars = card.querySelectorAll(".title-char");
+        
+        gsap.to(subtitle, { opacity: 0, duration: 0.2 });
+        gsap.to(chars, { opacity: 0, duration: 0.2 });
+        gsap.to(desc, { opacity: 0, duration: 0.2 });
+        gsap.to(tags.querySelectorAll("span"), { opacity: 0, duration: 0.2 });
+        gsap.to(visual, { opacity: 0, duration: 0.2 });
+    }
+
+    // Add hover effect to cards
+    whyCards.forEach((card, index) => {
+        card.addEventListener("mouseenter", () => {
+            gsap.to(card, {
+                scale: 1.02,
+                duration: 0.4,
+                ease: "power2.out"
+            });
+        });
+
+        card.addEventListener("mouseleave", () => {
+            gsap.to(card, {
+                scale: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            });
+        });
+    });
+
+    // Parallax effect on background shapes
+    gsap.to(".why-shape--1", {
+        y: 100,
+        ease: "none",
+        scrollTrigger: {
+            trigger: whyGsapSection,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+        }
+    });
+
+    gsap.to(".why-shape--2", {
+        y: -80,
+        ease: "none",
+        scrollTrigger: {
+            trigger: whyGsapSection,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+        }
+    });
+
+    gsap.to(".why-shape--3", {
         y: 60,
-        opacity: 0,
-        ease: "power3.out"
+        ease: "none",
+        scrollTrigger: {
+            trigger: whyGsapSection,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+        }
     });
 
-    // Animate feature card titles
-    gsap.from(".feature-card h3", {
-        scrollTrigger: {
-            trigger: ".features-grid",
-            start: "top 70%",
-            toggleActions: "play none none reverse"
-        },
-        duration: 0.6,
-        y: 20,
-        opacity: 0,
-        stagger: 0.1,
-        ease: "power2.out"
-    });
+    // =====================
+    // Tools Animations
+    // =====================
 
-    // Animate feature cards with stagger
-    gsap.from(featureCards, {
+    const toolCards = document.querySelectorAll(".tool-card");
+
+    // Animate tools title
+    gsap.from(".tools-title, .tools-subtitle", {
         scrollTrigger: {
-            trigger: ".features-grid",
-            start: "top 75%",
-            toggleActions: "play none none reverse"
+            trigger: ".tools",
+            start: "top 70%"
         },
         duration: 0.8,
-        y: 80,
+        y: 40,
         opacity: 0,
-        stagger: 0.15,
+        stagger: 0.1,
         ease: "power3.out"
     });
 
-    // Demo animations in feature cards
-    featureCards.forEach((card, index) => {
-        const dots = card.querySelectorAll(".demo-dot");
-        const colors = ["var(--green)", "var(--pink)", "var(--blue)", "var(--purple)"];
+    // Animate tool cards with stagger
+    gsap.from(toolCards, {
+        scrollTrigger: {
+            trigger: ".tools-grid",
+            start: "top 75%"
+        },
+        duration: 0.8,
+        y: 60,
+        opacity: 0,
+        stagger: 0.1,
+        ease: "power3.out"
+    });
 
-        // Continuous demo animation
-        gsap.to(dots, {
-            x: () => Math.random() * 40 - 20,
-            y: () => Math.random() * 20 - 10,
-            duration: 0.8 + Math.random() * 0.4,
+    // Continuous floating animation for tool cards
+    toolCards.forEach((card, index) => {
+        gsap.to(card, {
+            y: -5,
+            duration: 2 + index * 0.3,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            stagger: {
-                each: 0.1,
-                from: "random"
-            }
+            delay: index * 0.2
         });
+    });
 
-        // Click interaction
-        card.addEventListener("click", () => {
-            const isActive = card.classList.contains("active");
+    // =====================
+    // Brands Animations
+    // =====================
 
-            // Close all other cards
-            featureCards.forEach(c => {
-                if (c !== card) {
-                    c.classList.remove("active");
-                    gsap.to(c, { scale: 1, duration: 0.3 });
-                }
-            });
+    gsap.from(".brands-label", {
+        scrollTrigger: {
+            trigger: ".brands",
+            start: "top 80%"
+        },
+        duration: 0.8,
+        y: 20,
+        opacity: 0,
+        ease: "power2.out"
+    });
 
-            // Toggle this card
-            if (isActive) {
-                card.classList.remove("active");
-                gsap.to(card, { scale: 1, duration: 0.3 });
-            } else {
-                card.classList.add("active");
-                gsap.to(card, {
-                    scale: 1.02,
-                    duration: 0.3,
-                    boxShadow: `0 20px 40px ${colors[index]}33`
-                });
-            }
-        });
+    gsap.from(".brand-item", {
+        scrollTrigger: {
+            trigger: ".brands-track",
+            start: "top 90%"
+        },
+        duration: 0.6,
+        opacity: 0,
+        stagger: 0.05,
+        ease: "power2.out"
     });
 
     // =====================
