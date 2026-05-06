@@ -1,0 +1,43 @@
+.brands {
+    padding: 5rem 2rem;
+    background: var(--dark);
+    overflow: hidden;
+}
+
+.brandsLabel {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 3rem;
+}
+
+.brandsTrack {
+    display: flex;
+    gap: 4rem;
+    animation: scrollBrands 30s linear infinite;
+    width: max-content;
+}
+
+.brandsTrack:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scrollBrands {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.brandItem {
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.25);
+    white-space: nowrap;
+    transition: color 0.3s;
+}
+
+.brandItem:hover {
+    color: rgba(255, 255, 255, 0.6);
+}

@@ -1,0 +1,345 @@
+.whyGsap {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--dark);
+}
+
+.bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    filter: blur(80px);
+}
+
+.shape1 {
+    width: 600px;
+    height: 600px;
+    background: var(--green);
+    top: -200px;
+    left: -150px;
+    animation: floatShape 8s ease-in-out infinite;
+}
+
+.shape2 {
+    width: 500px;
+    height: 500px;
+    background: var(--blue);
+    bottom: -100px;
+    right: 15%;
+    animation: floatShape 10s ease-in-out infinite reverse;
+}
+
+.shape3 {
+    width: 400px;
+    height: 400px;
+    background: var(--purple);
+    top: 40%;
+    right: -100px;
+    animation: floatShape 12s ease-in-out infinite;
+}
+
+.grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    opacity: 0;
+}
+
+@keyframes floatShape {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+.sectionTitle {
+    position: absolute;
+    top: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    font-family: 'Courier New', monospace;
+    z-index: 10;
+    opacity: 0;
+}
+
+.wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    width: fit-content;
+    will-change: transform;
+    perspective: 1000px;
+    gap: 3rem;
+    padding: 0 5vw;
+}
+
+.card {
+    width: 50%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4rem 0 8rem;
+    flex-shrink: 0;
+    position: relative;
+    transform-style: preserve-3d;
+    margin: auto 0;
+}
+
+.cardVisual {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+/* Card 1 visuals */
+.card1 .visualCircle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 3px solid var(--green);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulseCircle 2s ease-in-out infinite;
+}
+
+.card1 .visualRing {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+    animation: pulseRing 3s ease-in-out infinite;
+}
+
+.card1 .visualDot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--green);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: dotFloat 2s ease-in-out infinite;
+}
+
+@keyframes pulseCircle {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes pulseRing {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+}
+
+@keyframes dotFloat {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-30px); }
+}
+
+/* Card 2 visuals */
+.card2 .visualWave {
+    position: absolute;
+    width: 200px;
+    height: 60px;
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.6;
+}
+
+.card2 .visualWave:nth-child(1) {
+    top: 30%;
+    animation: waveMove 2s ease-in-out infinite;
+}
+
+.card2 .visualWave:nth-child(2) {
+    top: 45%;
+    animation: waveMove 2s ease-in-out infinite 0.3s;
+}
+
+.card2 .visualWave:nth-child(3) {
+    top: 60%;
+    animation: waveMove 2s ease-in-out infinite 0.6s;
+}
+
+@keyframes waveMove {
+    0%, 100% { transform: translateX(-50%) scaleX(0.8); }
+    50% { transform: translateX(-50%) scaleX(1.2); }
+}
+
+/* Card 3 visuals */
+.card3 .visualSequence {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 15px;
+}
+
+.card3 .visualSequence span {
+    width: 30px;
+    height: 80px;
+    background: var(--purple);
+    border-radius: 15px;
+    animation: sequenceBounce 1.5s ease-in-out infinite;
+}
+
+.card3 .visualSequence span:nth-child(1) { animation-delay: 0s; }
+.card3 .visualSequence span:nth-child(2) { animation-delay: 0.15s; }
+.card3 .visualSequence span:nth-child(3) { animation-delay: 0.3s; }
+.card3 .visualSequence span:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes sequenceBounce {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+}
+
+/* Card 4 visuals */
+.card4 .visualPlugin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 10px;
+}
+
+.card4 .visualPlugin span {
+    width: 20px;
+    height: 60px;
+    background: var(--orange);
+    border-radius: 10px;
+    animation: pluginPulse 1.5s ease-in-out infinite;
+}
+
+.card4 .visualPlugin span:nth-child(1) { animation-delay: 0s; }
+.card4 .visualPlugin span:nth-child(2) { animation-delay: 0.2s; }
+.card4 .visualPlugin span:nth-child(3) { animation-delay: 0.4s; }
+.card4 .visualPlugin span:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes pluginPulse {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+}
+
+.subtitle {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.title {
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+    opacity: 1;
+    transform: none;
+}
+
+.titleWord {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.titleChar {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) rotateX(-90deg);
+    transform-origin: bottom center;
+}
+
+.desc {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 480px;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.tags {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    opacity: 1;
+    transform: none;
+    flex-wrap: wrap;
+}
+
+.tags span {
+    padding: 0.4rem 0.9rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+}
+
+.card:hover .tags span {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+/* Card colors */
+.card1 .title { color: var(--green); }
+.card2 .title { color: var(--blue); }
+.card3 .title { color: var(--purple); }
+.card4 .title { color: var(--orange); }
+
+@media (max-width: 768px) {
+    .card {
+        width: 100vw;
+        padding: 0 2rem;
+    }
+
+    .cardVisual {
+        display: none;
+    }
+}

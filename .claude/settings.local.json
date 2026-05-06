@@ -16,7 +16,10 @@
       "Bash(curl -s http://localhost:8080/ | head -60)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/)",
       "Bash(find /c/Users/wuson -name \"*.png\" -type f 2>/dev/null | head -10)",
-      "mcp__MiniMax__understand_image"
+      "mcp__MiniMax__understand_image",
+      "Bash(python *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
     ]
   }
 }

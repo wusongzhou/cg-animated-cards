@@ -1,0 +1,77 @@
+.showcase {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--dark);
+}
+
+.wrapper {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 4rem;
+    padding: 0 5vw;
+    will-change: transform;
+}
+
+.item {
+    flex-shrink: 0;
+    width: min(600px, 80vw);
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg,
+        var(--green) 0%,
+        var(--blue) 50%,
+        var(--purple) 100%);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.8) 100%);
+}
+
+.item h3 {
+    position: relative;
+    z-index: 1;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.item p {
+    position: relative;
+    z-index: 1;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.item2 {
+    background: linear-gradient(135deg,
+        var(--pink) 0%,
+        var(--orange) 50%,
+        var(--green) 100%);
+}
+
+.item3 {
+    background: linear-gradient(135deg,
+        var(--blue) 0%,
+        var(--purple) 50%,
+        var(--pink) 100%);
+}
+
+.item4 {
+    background: linear-gradient(135deg,
+        var(--purple) 0%,
+        var(--green) 50%,
+        var(--orange) 100%);
+}
