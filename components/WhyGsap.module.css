@@ -18,6 +18,8 @@
     border-radius: 50%;
     opacity: 0;
     filter: blur(80px);
+    will-change: transform;
+    animation-play-state: paused;
 }
 
 .shape1 {
@@ -132,6 +134,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     animation: pulseCircle 2s ease-in-out infinite;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 .card1 .visualRing {
@@ -145,6 +149,8 @@
     transform: translate(-50%, -50%);
     opacity: 0.5;
     animation: pulseRing 3s ease-in-out infinite;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 .card1 .visualDot {
@@ -157,6 +163,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     animation: dotFloat 2s ease-in-out infinite;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 @keyframes pulseCircle {
@@ -184,6 +192,8 @@
     left: 50%;
     transform: translateX(-50%);
     opacity: 0.6;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 .card2 .visualWave:nth-child(1) {
@@ -222,6 +232,8 @@
     background: var(--purple);
     border-radius: 15px;
     animation: sequenceBounce 1.5s ease-in-out infinite;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 .card3 .visualSequence span:nth-child(1) { animation-delay: 0s; }
@@ -250,6 +262,8 @@
     background: var(--orange);
     border-radius: 10px;
     animation: pluginPulse 1.5s ease-in-out infinite;
+    animation-play-state: paused;
+    will-change: transform;
 }
 
 .card4 .visualPlugin span:nth-child(1) { animation-delay: 0s; }
@@ -341,6 +355,16 @@
     pointer-events: none;
     z-index: 20;
     mix-blend-mode: screen;
+}
+
+.running .shape,
+.running .visualCircle,
+.running .visualRing,
+.running .visualDot,
+.running .visualWave,
+.running .visualSequence span,
+.running .visualPlugin span {
+    animation-play-state: running;
 }
 
 @media (max-width: 768px) {

@@ -39,12 +39,19 @@ export default function Cta() {
       delay: 0.3,
     });
 
-    gsap.to(ctaButton, {
+    const glowTween = gsap.to(ctaButton, {
       boxShadow: "0 0 30px rgba(10, 228, 72, 0.3)",
       duration: 1.5,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        onLeave: () => glowTween.pause(),
+        onEnterBack: () => glowTween.resume(),
+      },
     });
 
     const onEnter = contextSafe(() => {

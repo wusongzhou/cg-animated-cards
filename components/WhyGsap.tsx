@@ -318,6 +318,7 @@ export default function WhyGsap() {
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onEnter: () => {
+          whyGsapSection.classList.add(styles.running);
           if (!group1Entered) {
             group1Entered = true;
             playGroup1Entrance();
@@ -335,6 +336,7 @@ export default function WhyGsap() {
           }
         },
         onLeaveBack: () => {
+          whyGsapSection.classList.remove(styles.running);
           group1Entered = false;
           group2Entered = false;
           // Reset all cards to hidden for re-entrance

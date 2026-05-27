@@ -39,15 +39,23 @@ export default function Tools() {
       ease: "power3.out",
     });
 
+    const floatTweens: gsap.core.Tween[] = [];
     toolCards.forEach((card, index) => {
-      gsap.to(card, {
+      floatTweens.push(gsap.to(card, {
         y: -5,
         duration: 2 + index * 0.3,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
         delay: index * 0.2,
-      });
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          onLeave: () => floatTweens.forEach(t => t.pause()),
+          onEnterBack: () => floatTweens.forEach(t => t.resume()),
+        },
+      }));
     });
   }, { scope: sectionRef });
 

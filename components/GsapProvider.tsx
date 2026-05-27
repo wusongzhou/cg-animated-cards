@@ -5,6 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function SmoothScroll() {
-  return null;
+export default function GsapProvider({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

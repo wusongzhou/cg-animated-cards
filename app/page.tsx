@@ -6,12 +6,11 @@ import Brands from "@/components/Brands";
 import Showcase from "@/components/Showcase";
 import Cta from "@/components/Cta";
 import Footer from "@/components/Footer";
-import SmoothScroll from "@/components/SmoothScroll";
+import GsapProvider from "@/components/GsapProvider";
 
 export default function Home() {
   return (
-    <>
-      <SmoothScroll />
+    <GsapProvider>
       <Nav />
       <Hero />
       <WhyGsap />
@@ -20,6 +19,6 @@ export default function Home() {
       <Showcase />
       <Cta />
       <Footer />
-    </>
+    </GsapProvider>
   );
 }

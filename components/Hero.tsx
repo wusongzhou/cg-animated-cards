@@ -130,17 +130,24 @@ export default function Hero() {
       word2Delay += 0.05;
     });
 
-    // Floating animation for title
-    gsap.to(heroTitle, {
+    // Floating animation for title — pauses when hero scrolls out
+    const floatTween = gsap.to(heroTitle, {
       y: -5,
       duration: 4,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
       delay: 2,
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        onLeave: () => floatTween.pause(),
+        onEnterBack: () => floatTween.resume(),
+      },
     });
 
-    // Continuous flip animation for 'i' in "Anything"
+    // Continuous flip animation for 'i' in "Anything" — pauses when hero scrolls out
     gsap.delayedCall(2.5, () => {
       const wordAny = heroWords[1];
       const clipsAny = wordAny.querySelectorAll(`.${styles.clip}`);
@@ -151,8 +158,17 @@ export default function Hero() {
 
       gsap.set(charI, { transformOrigin: "center center" });
 
-      const tl = gsap.timeline({ repeat: -1 });
-      tl.to(charI, { rotationX: 540, duration: 2, ease: "power1.inOut" })
+      const flipTl = gsap.timeline({
+        repeat: -1,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          onLeave: () => flipTl.pause(),
+          onEnterBack: () => flipTl.resume(),
+        },
+      });
+      flipTl.to(charI, { rotationX: 540, duration: 2, ease: "power1.inOut" })
         .to(charI, { rotationX: 540, duration: 1.5 })
         .to(charI, { rotationX: 0, duration: 2, ease: "power1.inOut" })
         .to(charI, { rotationX: 0, duration: 1.5 });
