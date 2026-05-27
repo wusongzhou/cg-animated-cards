@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP((context, contextSafe) => {
     if (!heroRef.current) return;
 
     const heroTitle = heroRef.current.querySelector(`.${styles.heroTitle}`);
@@ -17,15 +18,25 @@ export default function Hero() {
     if (heroWords.length === 0) return;
 
     // Nav animation
-    gsap.from("nav", {
-      duration: 1,
-      y: -100,
-      opacity: 0,
-      ease: "power3.out",
-    });
+    const nav = document.querySelector("nav");
+    if (nav) {
+      gsap.from(nav, {
+        duration: 1,
+        y: -100,
+        opacity: 0,
+        ease: "power3.out",
+      });
+    }
 
     // Scroll indicator animation
     const scrollIndicator = heroRef.current.querySelector(`.${styles.scrollIndicator}`);
+    const onScrollClick = () => {
+      const target = document.querySelector(".why-gsap");
+      if (target) {
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
+        window.scrollTo({ top: targetPosition, behavior: "smooth" });
+      }
+    };
     if (scrollIndicator) {
       gsap.from(scrollIndicator, {
         duration: 1,
@@ -34,14 +45,7 @@ export default function Hero() {
         delay: 2.2,
         ease: "power2.out",
       });
-
-      scrollIndicator.addEventListener("click", () => {
-        const target = document.querySelector(".why-gsap");
-        if (target) {
-          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
-          window.scrollTo({ top: targetPosition, behavior: "smooth" });
-        }
-      });
+      scrollIndicator.addEventListener("click", onScrollClick);
     }
 
     // Timeline for title animation
@@ -137,7 +141,7 @@ export default function Hero() {
     });
 
     // Continuous flip animation for 'i' in "Anything"
-    setTimeout(() => {
+    gsap.delayedCall(2.5, () => {
       const wordAny = heroWords[1];
       const clipsAny = wordAny.querySelectorAll(`.${styles.clip}`);
       const letterI = clipsAny[5]; // 0:A, 1:n, 2:y, 3:t, 4:h, 5:i
@@ -152,17 +156,17 @@ export default function Hero() {
         .to(charI, { rotationX: 540, duration: 1.5 })
         .to(charI, { rotationX: 0, duration: 2, ease: "power1.inOut" })
         .to(charI, { rotationX: 0, duration: 1.5 });
-    }, 2500);
+    });
 
     // Hover effect on all clips
     const allClips = heroTitle.querySelectorAll(`.${styles.clip}`);
+    const hoverHandlers: Array<{ el: Element; enter: () => void; leave: () => void }> = [];
     allClips.forEach((clip) => {
-      clip.addEventListener("mouseenter", () => {
-        gsap.to(clip, { y: -3, duration: 0.2, ease: "power2.out" });
-      });
-      clip.addEventListener("mouseleave", () => {
-        gsap.to(clip, { y: 0, duration: 0.2, ease: "power2.out" });
-      });
+      const enter = contextSafe(() => { gsap.to(clip, { y: -3, duration: 0.2, ease: "power2.out" }); });
+      const leave = contextSafe(() => { gsap.to(clip, { y: 0, duration: 0.2, ease: "power2.out" }); });
+      clip.addEventListener("mouseenter", enter);
+      clip.addEventListener("mouseleave", leave);
+      hoverHandlers.push({ el: clip, enter, leave });
     });
 
     // Subtitle animation
@@ -176,7 +180,15 @@ export default function Hero() {
         ease: "power2.out",
       });
     }
-  }, []);
+
+    return () => {
+      if (scrollIndicator) scrollIndicator.removeEventListener("click", onScrollClick);
+      hoverHandlers.forEach(({ el, enter, leave }) => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
+    };
+  }, { scope: heroRef });
 
   return (
     <section ref={heroRef} className={styles.hero}>

@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./WhyGsap.module.css";
 
 export default function WhyGsap() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     const whyGsapSection = sectionRef.current;
     const whyTrack = whyGsapSection.querySelector(`.${styles.track}`) as HTMLElement;
@@ -31,17 +31,10 @@ export default function WhyGsap() {
       });
     }
 
-    // Calculate scroll amount
-    const whyScrollAmount = () => {
-      const cardWidth = (whyCards[0] as HTMLElement).offsetWidth;
-      const gap = 48;
-      return -((cardWidth * 2) + (gap * 3));
-    };
-
     // Animated cards tracking
     const animatedCards = new Set<number>();
 
-    function animateCardContent(card: Element, _index: number) {
+    function animateCardContent(card: Element) {
       const subtitle = card.querySelector(`.${styles.subtitle}`);
       const desc = card.querySelector(`.${styles.desc}`);
       const tags = card.querySelector(`.${styles.tags}`);
@@ -98,93 +91,260 @@ export default function WhyGsap() {
       return tl;
     }
 
-    // Initialize first 2 cards
+    // Initialize all cards hidden with 3D transforms
     whyCards.forEach((card, index) => {
       if (index < 2) {
-        gsap.fromTo(card,
-          { opacity: 0, scale: 0.9, rotationY: index === 0 ? -15 : 15, x: index === 0 ? -50 : 50 },
-          { opacity: 1, scale: 1, rotationY: 0, x: 0, duration: 0.8, delay: index * 0.15, ease: "power3.out" }
-        );
+        gsap.set(card, { opacity: 0, scale: 0.85, x: -120, rotationY: -20 });
       } else {
-        gsap.set(card, { opacity: 0, scale: 0.85, rotationY: -8 });
+        gsap.set(card, { opacity: 0, scale: 0.85, x: 120, rotationY: 15 });
       }
     });
 
-    setTimeout(() => {
-      animatedCards.add(0);
-      animatedCards.add(1);
-      animateCardContent(whyCards[0], 0);
-      animateCardContent(whyCards[1], 1);
-    }, 100);
+    // ============================================================
+    // Per-card particle effects
+    // ============================================================
+    function getCardCenter(card: Element) {
+      const rect = card.getBoundingClientRect();
+      const sectionRect = whyGsapSection.getBoundingClientRect();
+      return {
+        cx: rect.left - sectionRect.left + rect.width / 2,
+        cy: rect.top - sectionRect.top + rect.height / 2,
+      };
+    }
 
-    let currentRow = "first";
-    let isAnimating = false;
+    function spawnCard1Particles(card: Element) {
+      const { cx, cy } = getCardCenter(card);
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement("div");
+        p.className = styles.particle;
+        const size = gsap.utils.random(4, 10);
+        const color = ["#4EFFAF", "#7DFFCF", "#2BFF8F"][Math.floor(Math.random() * 3)];
+        const angle = gsap.utils.random(0, Math.PI * 2);
+        const dist = gsap.utils.random(100, 300);
+        gsap.set(p, { left: cx, top: cy, width: size, height: size, backgroundColor: color,
+          boxShadow: `0 0 ${size * 4}px ${color}`, scale: 0, borderRadius: "50%" });
+        whyGsapSection.appendChild(p);
+        gsap.to(p, {
+          left: cx + Math.cos(angle) * dist, top: cy + Math.sin(angle) * dist,
+          scale: gsap.utils.random(0.5, 2), opacity: 0,
+          rotation: gsap.utils.random(-360, 360),
+          duration: gsap.utils.random(0.8, 1.5), ease: "power2.out",
+          delay: gsap.utils.random(0, 0.2), onComplete: () => p.remove(),
+        });
+      }
+    }
 
-    // Horizontal scroll tween
+    function spawnCard2Particles(card: Element) {
+      const { cx, cy } = getCardCenter(card);
+      for (let i = 0; i < 15; i++) {
+        const p = document.createElement("div");
+        p.className = styles.particle;
+        const size = gsap.utils.random(3, 7);
+        const color = ["#64B4FF", "#4A9EFF", "#8FD4FF"][Math.floor(Math.random() * 3)];
+        gsap.set(p, {
+          left: cx - gsap.utils.random(100, 200), top: cy + gsap.utils.random(-100, 100),
+          width: size, height: size, backgroundColor: color,
+          boxShadow: `0 0 ${size * 3}px ${color}`, scale: 0, borderRadius: "50%",
+        });
+        whyGsapSection.appendChild(p);
+        gsap.to(p, {
+          left: cx + gsap.utils.random(200, 400),
+          keyframes: [
+            { top: cy + gsap.utils.random(-60, -30), scale: 1.5, duration: 0.4 },
+            { top: cy + gsap.utils.random(30, 60), scale: 1, duration: 0.4 },
+            { top: cy, scale: 0.5, opacity: 0, duration: 0.4 },
+          ],
+          duration: 1.2, ease: "power1.inOut",
+          delay: i * 0.06, onComplete: () => p.remove(),
+        });
+      }
+    }
+
+    function spawnCard3Particles(card: Element) {
+      const { cx, cy } = getCardCenter(card);
+      for (let i = 0; i < 8; i++) {
+        const line = document.createElement("div");
+        line.className = styles.particle;
+        const color = ["#A882FF", "#C4A8FF", "#8B5CF6"][Math.floor(Math.random() * 3)];
+        gsap.set(line, {
+          left: cx + (i - 4) * 25, top: cy, width: 3, height: 0,
+          backgroundColor: color, boxShadow: `0 0 8px ${color}`,
+          opacity: 0, borderRadius: "2px",
+        });
+        whyGsapSection.appendChild(line);
+        gsap.to(line, {
+          height: gsap.utils.random(60, 120), opacity: 0.8,
+          duration: 0.3, ease: "power2.out", delay: i * 0.05,
+        });
+        gsap.to(line, {
+          top: cy - gsap.utils.random(80, 160), opacity: 0, height: 0,
+          duration: 0.6, ease: "power2.in", delay: i * 0.05 + 0.3,
+          onComplete: () => line.remove(),
+        });
+      }
+    }
+
+    function spawnCard4Particles(card: Element) {
+      const { cx, cy } = getCardCenter(card);
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement("div");
+        p.className = styles.particle;
+        const size = gsap.utils.random(2, 5);
+        const color = ["#FFA050", "#FF6B6B", "#FFD93D"][Math.floor(Math.random() * 3)];
+        const angle = gsap.utils.random(0, Math.PI * 2);
+        const dist = gsap.utils.random(50, 200);
+        gsap.set(p, {
+          left: cx + gsap.utils.random(-50, 50), top: cy + gsap.utils.random(-50, 50),
+          width: size, height: size, backgroundColor: color,
+          boxShadow: `0 0 ${size * 5}px ${color}`, scale: 0, borderRadius: "1px",
+        });
+        whyGsapSection.appendChild(p);
+        const tl = gsap.timeline({ delay: gsap.utils.random(0, 0.3), onComplete: () => p.remove() });
+        tl.to(p, { scale: gsap.utils.random(1, 3), duration: 0.05, ease: "steps(1)" });
+        tl.to(p, { scale: 0, duration: 0.05, ease: "steps(1)" });
+        tl.to(p, { scale: gsap.utils.random(1, 2), duration: 0.05, ease: "steps(1)" });
+        tl.to(p, {
+          left: cx + Math.cos(angle) * dist, top: cy + Math.sin(angle) * dist,
+          scale: 0, opacity: 0, duration: gsap.utils.random(0.3, 0.6), ease: "power2.out",
+        });
+      }
+    }
+
+    // ============================================================
+    // Per-card entrance animations
+    // ============================================================
+    function animateCardEntrance(card: Element, index: number, opts: { onComplete?: () => void }) {
+      gsap.killTweensOf(card);
+      const entraces: Record<number, () => gsap.core.Tween | gsap.core.Timeline> = {
+        0: () => gsap.to(card, {
+          opacity: 1, scale: 1, x: 0, y: 0, rotationY: 0,
+          duration: 1.2, ease: "elastic.out(1, 0.5)",
+          onComplete: opts.onComplete,
+        }),
+        1: () => gsap.to(card, {
+          opacity: 1, scale: 1, x: 0, y: 0, rotationY: 0,
+          duration: 1, ease: "sine.inOut",
+          onComplete: opts.onComplete,
+        }),
+        2: () => {
+          const tl = gsap.timeline({ onComplete: opts.onComplete });
+          tl.to(card, { opacity: 0.5, x: -60, scale: 0.9, duration: 0.15, ease: "steps(2)" });
+          tl.to(card, { opacity: 0.8, x: 30, scale: 0.95, duration: 0.15, ease: "steps(2)" });
+          tl.to(card, { opacity: 0.3, x: -15, scale: 0.92, duration: 0.1, ease: "steps(1)" });
+          tl.to(card, {
+            opacity: 1, scale: 1, x: 0, y: 0, rotationY: 0,
+            duration: 0.8, ease: "power3.out",
+          });
+          return tl;
+        },
+        3: () => {
+          const tl = gsap.timeline({ onComplete: opts.onComplete });
+          for (let j = 0; j < 5; j++) {
+            tl.to(card, {
+              opacity: Math.random() * 0.5 + 0.3,
+              x: gsap.utils.random(-20, 20),
+              scale: gsap.utils.random(0.9, 1.1),
+              duration: 0.04, ease: "steps(1)",
+            });
+          }
+          tl.to(card, {
+            opacity: 1, scale: 1, x: 0, y: 0, rotationY: 0,
+            duration: 0.7, ease: "power3.out",
+          });
+          return tl;
+        },
+      };
+      return (entraces[index] || entraces[0])();
+    }
+
+    function playGroup1Entrance() {
+      animateCardEntrance(whyCards[0], 0, {
+        onComplete: () => {
+          if (!animatedCards.has(0)) {
+            animatedCards.add(0);
+            animateCardContent(whyCards[0]);
+            spawnCard1Particles(whyCards[0]);
+          }
+        },
+      });
+      gsap.delayedCall(0.2, () => {
+        animateCardEntrance(whyCards[1], 1, {
+          onComplete: () => {
+            if (!animatedCards.has(1)) {
+              animatedCards.add(1);
+              animateCardContent(whyCards[1]);
+              spawnCard2Particles(whyCards[1]);
+            }
+          },
+        });
+      });
+    }
+
+    function playGroup2Entrance() {
+      animateCardEntrance(whyCards[2], 2, {
+        onComplete: () => {
+          if (!animatedCards.has(2)) {
+            animatedCards.add(2);
+            animateCardContent(whyCards[2]);
+            spawnCard3Particles(whyCards[2]);
+          }
+        },
+      });
+      gsap.delayedCall(0.2, () => {
+        animateCardEntrance(whyCards[3], 3, {
+          onComplete: () => {
+            if (!animatedCards.has(3)) {
+              animatedCards.add(3);
+              animateCardContent(whyCards[3]);
+              spawnCard4Particles(whyCards[3]);
+            }
+          },
+        });
+      });
+    }
+
+    let group1Entered = false;
+    let group2Entered = false;
+
+    // Horizontal scroll with entrance triggers
     gsap.to(whyTrack, {
-      x: whyScrollAmount,
+      x: () => -(whyTrack.scrollWidth - window.innerWidth),
       ease: "none",
       scrollTrigger: {
         trigger: whyGsapSection,
         start: "top top",
-        end: () => `+=${whyTrack.scrollWidth - window.innerWidth * 0.3}`,
+        end: () => `+=${whyTrack.scrollWidth - window.innerWidth}`,
         pin: true,
         scrub: 1,
         invalidateOnRefresh: true,
         anticipatePin: 1,
-        toggleActions: "play none none none",
-        onUpdate: (self) => {
-          if (isAnimating) return;
-
-          const progress = self.progress;
-          const isFirstRow = progress < 0.5;
-          const targetRow = isFirstRow ? "first" : "second";
-
-          if (currentRow !== targetRow) {
-            isAnimating = true;
-            currentRow = targetRow;
-
-            if (isFirstRow) {
-              gsap.to([whyCards[0], whyCards[1]], {
-                opacity: 1, visibility: "visible", duration: 0.4, ease: "power2.out",
-              });
-              gsap.to([whyCards[2], whyCards[3]], {
-                opacity: 0, visibility: "hidden", duration: 0.3, ease: "power2.in",
-                onComplete: () => { isAnimating = false; },
-              });
-              animateCardContent(whyCards[0], 0);
-              animateCardContent(whyCards[1], 1);
-            } else {
-              gsap.to([whyCards[0], whyCards[1]], {
-                opacity: 0, visibility: "hidden", duration: 0.3, ease: "power2.in",
-              });
-              gsap.to([whyCards[2], whyCards[3]], {
-                opacity: 1, visibility: "visible", duration: 0.4, ease: "power2.out",
-                onComplete: () => { isAnimating = false; },
-              });
-              if (!animatedCards.has(2)) {
-                animatedCards.add(2);
-                animateCardContent(whyCards[2], 2);
-              }
-              if (!animatedCards.has(3)) {
-                animatedCards.add(3);
-                animateCardContent(whyCards[3], 3);
-              }
-            }
+        onEnter: () => {
+          if (!group1Entered) {
+            group1Entered = true;
+            playGroup1Entrance();
           }
+        },
+        onEnterBack: () => {
+          group2Entered = false;
+          // Reset group 2 to hidden for re-entrance
+          gsap.set([whyCards[2], whyCards[3]], { opacity: 0, scale: 0.85, x: 120, rotationY: 15 });
+        },
+        onUpdate: (self) => {
+          if (self.progress >= 0.5 && !group2Entered) {
+            group2Entered = true;
+            playGroup2Entrance();
+          }
+        },
+        onLeaveBack: () => {
+          group1Entered = false;
+          group2Entered = false;
+          // Reset all cards to hidden for re-entrance
+          gsap.set([whyCards[0], whyCards[1]], { opacity: 0, scale: 0.85, x: -120, rotationY: -20 });
+          gsap.set([whyCards[2], whyCards[3]], { opacity: 0, scale: 0.85, x: 120, rotationY: 15 });
         },
       },
     });
 
-    // Hover effects
-    whyCards.forEach((card) => {
-      card.addEventListener("mouseenter", () => {
-        gsap.to(card, { scale: 1.02, duration: 0.4, ease: "power2.out" });
-      });
-      card.addEventListener("mouseleave", () => {
-        gsap.to(card, { scale: 1, duration: 0.4, ease: "power2.out" });
-      });
-    });
 
     // Parallax on background shapes
     const shapes = whyGsapSection.querySelectorAll(`.${styles.shape}`);
@@ -202,10 +362,7 @@ export default function WhyGsap() {
       });
     });
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className={`${styles.whyGsap} why-gsap`}>

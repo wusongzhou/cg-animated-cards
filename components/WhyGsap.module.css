@@ -333,6 +333,16 @@
 .card3 .title { color: var(--purple); }
 .card4 .title { color: var(--orange); }
 
+
+/* Floating particles */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 20;
+    mix-blend-mode: screen;
+}
+
 @media (max-width: 768px) {
     .card {
         width: 100vw;

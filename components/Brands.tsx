@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./Brands.module.css";
 
 const brandNames = ["Netflix", "Adobe", "Microsoft", "Spotify", "Nike", "Apple", "Google", "Amazon"];
@@ -10,14 +11,14 @@ const brandNames = ["Netflix", "Adobe", "Microsoft", "Spotify", "Nike", "Apple",
 export default function Brands() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     gsap.from(`.${styles.brandsLabel}`, {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top 80%",
+        toggleActions: "play none none none",
       },
       duration: 0.8,
       y: 20,
@@ -27,19 +28,16 @@ export default function Brands() {
 
     gsap.from(`.${styles.brandItem}`, {
       scrollTrigger: {
-        trigger: `.${styles.brandsTrack}`,
+        trigger: sectionRef.current.querySelector(`.${styles.brandsTrack}`),
         start: "top 90%",
+        toggleActions: "play none none none",
       },
       duration: 0.6,
       opacity: 0,
       stagger: 0.05,
       ease: "power2.out",
     });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className={styles.brands}>

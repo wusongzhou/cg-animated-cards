@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./Showcase.module.css";
 
 const showcaseData = [
@@ -15,9 +16,8 @@ const showcaseData = [
 export default function Showcase() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     const showcaseWrapper = sectionRef.current.querySelector(`.${styles.wrapper}`) as HTMLElement;
     const showcaseItems = sectionRef.current.querySelectorAll(`.${styles.item}`);
@@ -42,6 +42,8 @@ export default function Showcase() {
       },
     });
 
+    const hoverHandlers: Array<{ el: Element; enter: () => void; leave: () => void }> = [];
+
     showcaseItems.forEach((item) => {
       gsap.from(item, {
         scrollTrigger: {
@@ -58,19 +60,20 @@ export default function Showcase() {
         ease: "power3.out",
       });
 
-      item.addEventListener("mouseenter", () => {
-        gsap.to(item, { scale: 1.05, duration: 0.4, ease: "power2.out" });
-      });
-
-      item.addEventListener("mouseleave", () => {
-        gsap.to(item, { scale: 1, duration: 0.4, ease: "power2.out" });
-      });
+      const enter = () => { gsap.to(item, { scale: 1.05, duration: 0.4, ease: "power2.out" }); };
+      const leave = () => { gsap.to(item, { scale: 1, duration: 0.4, ease: "power2.out" }); };
+      item.addEventListener("mouseenter", enter);
+      item.addEventListener("mouseleave", leave);
+      hoverHandlers.push({ el: item, enter, leave });
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      hoverHandlers.forEach(({ el, enter, leave }) => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
     };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className={styles.showcase}>

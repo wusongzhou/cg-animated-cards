@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./Tools.module.css";
 
 export default function Tools() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     const toolCards = sectionRef.current.querySelectorAll(`.${styles.toolCard}`);
 
@@ -18,6 +18,7 @@ export default function Tools() {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top 70%",
+        toggleActions: "play none none none",
       },
       duration: 0.8,
       y: 40,
@@ -28,8 +29,9 @@ export default function Tools() {
 
     gsap.from(toolCards, {
       scrollTrigger: {
-        trigger: `.${styles.toolsGrid}`,
+        trigger: sectionRef.current.querySelector(`.${styles.toolsGrid}`),
         start: "top 75%",
+        toggleActions: "play none none none",
       },
       duration: 0.8,
       y: 60,
@@ -48,11 +50,7 @@ export default function Tools() {
         delay: index * 0.2,
       });
     });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className={styles.tools}>

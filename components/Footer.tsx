@@ -1,32 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!footerRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     gsap.from(footerRef.current, {
       scrollTrigger: {
         trigger: footerRef.current,
         start: "top 90%",
+        toggleActions: "play none none none",
       },
       duration: 0.8,
       y: 30,
       opacity: 0,
       ease: "power2.out",
     });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  }, { scope: footerRef });
 
   return (
     <footer ref={footerRef} className={styles.footer}>

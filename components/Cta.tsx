@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import styles from "./Cta.module.css";
 
 export default function Cta() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP((context, contextSafe) => {
     if (!sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
     gsap.from(`.${styles.ctaTitle}`, {
       scrollTrigger: {
@@ -48,7 +48,7 @@ export default function Cta() {
       ease: "sine.inOut",
     });
 
-    ctaButton.addEventListener("mouseenter", () => {
+    const onEnter = contextSafe(() => {
       gsap.to(ctaButton, {
         scale: 1.1,
         boxShadow: "0 0 60px rgba(10, 228, 72, 0.6)",
@@ -56,8 +56,7 @@ export default function Cta() {
         ease: "power2.out",
       });
     });
-
-    ctaButton.addEventListener("mouseleave", () => {
+    const onLeave = contextSafe(() => {
       gsap.to(ctaButton, {
         scale: 1,
         boxShadow: "0 0 30px rgba(10, 228, 72, 0.3)",
@@ -65,11 +64,14 @@ export default function Cta() {
         ease: "power2.out",
       });
     });
+    ctaButton.addEventListener("mouseenter", onEnter);
+    ctaButton.addEventListener("mouseleave", onLeave);
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctaButton.removeEventListener("mouseenter", onEnter);
+      ctaButton.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section ref={sectionRef} className={styles.cta}>
