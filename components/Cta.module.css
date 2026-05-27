@@ -48,8 +48,3 @@
     transition: all 0.3s ease;
     text-decoration: none;
 }
-
-.ctaButton:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(10, 228, 72, 0.5);
-}
