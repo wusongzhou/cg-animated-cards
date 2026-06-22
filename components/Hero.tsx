@@ -2,8 +2,10 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import styles from "./Hero.module.css";
+import { ShaderAnimation } from "./ui/shader-animation";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -138,13 +140,14 @@ export default function Hero() {
       yoyo: true,
       ease: "sine.inOut",
       delay: 2,
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: "top top",
-        end: "bottom top",
-        onLeave: () => floatTween.pause(),
-        onEnterBack: () => floatTween.resume(),
-      },
+    });
+    // Decouple pause/resume from playback so the float starts on load
+    ScrollTrigger.create({
+      trigger: heroRef.current,
+      start: "top top",
+      end: "bottom top",
+      onLeave: () => floatTween.pause(),
+      onEnterBack: () => floatTween.resume(),
     });
 
     // Continuous flip animation for 'i' in "Anything" — pauses when hero scrolls out
@@ -158,28 +161,28 @@ export default function Hero() {
 
       gsap.set(charI, { transformOrigin: "center center" });
 
-      const flipTl = gsap.timeline({
-        repeat: -1,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          onLeave: () => flipTl.pause(),
-          onEnterBack: () => flipTl.resume(),
-        },
-      });
+      // Timeline auto-plays on creation; scrollTrigger only pauses/resumes
+      const flipTl = gsap.timeline({ repeat: -1 });
       flipTl.to(charI, { rotationX: 540, duration: 2, ease: "power1.inOut" })
         .to(charI, { rotationX: 540, duration: 1.5 })
         .to(charI, { rotationX: 0, duration: 2, ease: "power1.inOut" })
         .to(charI, { rotationX: 0, duration: 1.5 });
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        onLeave: () => flipTl.pause(),
+        onEnterBack: () => flipTl.resume(),
+      });
     });
 
     // Hover effect on all clips
     const allClips = heroTitle.querySelectorAll(`.${styles.clip}`);
     const hoverHandlers: Array<{ el: Element; enter: () => void; leave: () => void }> = [];
+    const cs = contextSafe ?? ((fn: () => void) => fn);
     allClips.forEach((clip) => {
-      const enter = contextSafe(() => { gsap.to(clip, { y: -3, duration: 0.2, ease: "power2.out" }); });
-      const leave = contextSafe(() => { gsap.to(clip, { y: 0, duration: 0.2, ease: "power2.out" }); });
+      const enter = cs(() => { gsap.to(clip, { y: -3, duration: 0.2, ease: "power2.out" }); });
+      const leave = cs(() => { gsap.to(clip, { y: 0, duration: 0.2, ease: "power2.out" }); });
       clip.addEventListener("mouseenter", enter);
       clip.addEventListener("mouseleave", leave);
       hoverHandlers.push({ el: clip, enter, leave });
@@ -208,6 +211,9 @@ export default function Hero() {
 
   return (
     <section ref={heroRef} className={styles.hero}>
+      <div className={styles.shaderBg}>
+        <ShaderAnimation />
+      </div>
       <h1 className={styles.heroTitle}>
         {/* Word 1: Animate */}
         <span className={styles.wordAnimate}>

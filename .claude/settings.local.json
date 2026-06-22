@@ -19,7 +19,20 @@
       "mcp__MiniMax__understand_image",
       "Bash(python *)",
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(cp app/globals.css /tmp/globals.css.bak && echo \"backed up\")",
+      "Bash(npx shadcn@latest init -d -y)",
+      "Bash(node -e \"const p=require\\('./node_modules/shadcn/package.json'\\); console.log\\('main:',p.main\\); console.log\\('exports:',JSON.stringify\\(p.exports,null,2\\)\\)\")",
+      "Bash(curl -s http://localhost:55555/ -o /tmp/hero.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(npx -y playwright@latest install chromium)",
+      "Bash(node ./flip-check.mjs)",
+      "Read(//home/wsz/.cache/ms-playwright/**)",
+      "Bash(kill 3901142 3901143)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }

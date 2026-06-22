@@ -54,7 +54,8 @@ export default function Cta() {
       },
     });
 
-    const onEnter = contextSafe(() => {
+    const cs = contextSafe ?? ((fn: () => void) => fn);
+    const onEnter = cs(() => {
       gsap.to(ctaButton, {
         scale: 1.1,
         boxShadow: "0 0 60px rgba(10, 228, 72, 0.6)",
@@ -62,7 +63,7 @@ export default function Cta() {
         ease: "power2.out",
       });
     });
-    const onLeave = contextSafe(() => {
+    const onLeave = cs(() => {
       gsap.to(ctaButton, {
         scale: 1,
         boxShadow: "0 0 30px rgba(10, 228, 72, 0.3)",
